@@ -22,6 +22,7 @@ cmaes = "*"
 optuna = "*"
 yfinance = "*"
 tqdm = "*"
+nbformat = "*"
 
 [dev-packages]
 black = "*"
