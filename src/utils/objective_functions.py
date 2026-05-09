@@ -15,6 +15,7 @@ def objective_scipy(
     qc: QuantumCircuit,
     ising: SparsePauliOp,
     offset: float,
+    callback: list = None,
 ) -> float:
     """
 
@@ -34,6 +35,8 @@ def objective_scipy(
     pubs = [(ansatz, ising)]
     estimator_job = estimator.run(pubs=pubs)
     estimator_result = estimator_job.result()
+    if not callback is None:
+        callback.append(params_mapper)
 
     obj_val = estimator_result[0].data.evs + offset
 
@@ -49,7 +52,8 @@ class ObjectiveOptuna:
         qc: QuantumCircuit,
         ising: SparsePauliOp,
         offset: float,
-        bounds: tuple = (0, 4 * np.pi),
+        bounds: tuple = (0, 2 * np.pi),
+        callback: list = None,
     ) -> ObjectiveOptuna:
         """
 
@@ -67,6 +71,7 @@ class ObjectiveOptuna:
         self.ising = ising
         self.offset = offset
         self.bounds = bounds
+        self.callback = callback
 
     def __call__(self, trial: Trial):
         ansatz = self.qc.copy()
@@ -79,6 +84,8 @@ class ObjectiveOptuna:
         pubs = [(ansatz, self.ising)]
         estimator_job = self.estimator.run(pubs=pubs)
         estimator_result = estimator_job.result()
+        if not self.callback is None:
+            self.callback.append(params_mapper)
 
         obj_val = estimator_result[0].data.evs + self.offset
 

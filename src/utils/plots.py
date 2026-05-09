@@ -1,5 +1,79 @@
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
+import seaborn as sns
+
+
+def plot_hamiltonian_expval_heatmap(
+    data: np.ndarray, xlabel: str = None, ylabel: str = None, title: str = None
+) -> None:
+    """"""
+
+    _, ax = plt.subplots()
+
+    sns.heatmap(data=data)
+    ax.set_xlabel(r"$\theta_0$" if xlabel is None else xlabel)
+    ax.set_ylabel(r"$\theta_1$" if ylabel is None else ylabel)
+    ax.set_title("Hamiltonian expectation value heatmap" if title is None else title)
+
+    plt.show()
+
+
+def plot_hamiltonian_expval_surface(
+    x: np.ndarray,
+    y: np.ndarray,
+    z: np.ndarray,
+    xlabel: str = None,
+    ylabel: str = None,
+    title: str = None,
+) -> go.Figure:
+    """"""
+
+    data = go.Surface(x=x, y=y, z=z)
+    fig = go.Figure(data=data)
+    fig.update_layout(
+        title_text=(
+            "Hamiltonian expectation value landscape" if title is None else title
+        ),
+        scene=dict(
+            xaxis=dict(title={"text": "theta_0" if xlabel is None else xlabel}),
+            yaxis=dict(title={"text": "theta_1" if ylabel is None else ylabel}),
+            zaxis=dict(title={"text": "<H>"}),
+        ),
+    )
+
+    return fig
+
+
+def plot_static_efficient_frontier(
+    df_efficient_frontier: pd.DataFrame, df_portfolios: pd.DataFrame = None
+) -> None:
+    """ """
+
+    _, ax = plt.subplots()
+
+    ax.set_title("Discrete Efficient Frontier")
+    ax.plot(
+        df_efficient_frontier.portfolio_risk.values,
+        df_efficient_frontier.portfolio_return.values,
+        linestyle="--",
+        marker="o",
+        color="black",
+        label="Efficient Frontrier",
+    )
+    if not df_portfolios is None:
+        sns.scatterplot(
+            data=df_portfolios,
+            x="portfolio_risk",
+            y="portfolio_return",
+            hue="sharpe",
+            ax=ax,
+        )
+    ax.set_xlabel("Risk")
+    ax.set_ylabel("Return")
+
+    plt.show()
 
 
 def plot_interactive_efficient_frontier(
@@ -24,46 +98,6 @@ def plot_interactive_efficient_frontier(
     fig.update_layout(
         xaxis_title="Risk",
         yaxis_title="Return",
-        title_text="Discrete Efficient Frontier",
-    )
-
-    return fig
-
-
-def plot_interactive_sharpe_ratio_surface(
-    returns: np.ndarray, risks: np.ndarray, sharpes: np.ndarray, portfolios: list = None
-) -> go.Figure:
-    """ """
-
-    data = [
-        go.Scatter3d(
-            x=risks,
-            y=returns,
-            z=sharpes,
-            mode="markers+lines",
-            line=dict(dash="dash"),
-            marker=dict(color="black", size=3),
-            showlegend=True,
-            name="Efficient Frontier",
-        ),
-        go.Surface(
-            x=np.linspace(risks.min(), risks.max(), 101),
-            y=np.linspace(returns.min(), returns.max(), 101),
-            z=np.zeros(101),
-            colorscale="gray",
-            opacity=0.3,
-            showscale=False,
-        )
-    ]
-    if not portfolios is None:
-        data.extend(portfolios)
-    fig = go.Figure(data=data)
-    fig.update_layout(
-        scene=dict(
-            xaxis=dict(title="Risk"),
-            yaxis=dict(title="Return"),
-            zaxis=dict(title="Sharpe Ratio"),
-        ),
         title_text="Discrete Efficient Frontier",
     )
 

@@ -23,6 +23,7 @@ optuna = "*"
 yfinance = "*"
 tqdm = "*"
 nbformat = "*"
+qiskit-experiments = "*"
 
 [dev-packages]
 black = "*"
