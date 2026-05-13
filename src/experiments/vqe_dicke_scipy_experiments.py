@@ -10,6 +10,7 @@ import time
 import numpy as np
 import pandas as pd
 
+from qiskit.circuit import ClassicalRegister
 from qiskit.primitives import BackendEstimatorV2
 from qiskit.transpiler import generate_preset_pass_manager
 from qiskit_aer import AerSimulator
@@ -73,8 +74,8 @@ columns = [
     "optimizer",
     "n_shots",
     "n_iter",
-    "obj_value",
     "initial_point",
+    "obj_value",
     "delta_obj_value",
     "percentual_error",
     "most_probable_bitstring",
@@ -107,7 +108,9 @@ for n_shots in tqdm(N_SHOTS_LIST, desc="num_shots"):
                 param: value for param, value in zip(ansatz.parameters, result_scipy.x)
             }
             ansatz = ansatz.assign_parameters(parameters=params_mapper)
-            ansatz.measure_all()
+            bits = ClassicalRegister(size=len(target), name="bits")
+            ansatz.add_register(bits)
+            ansatz.measure(qubit=ansatz.qregs[0][ising.num_qubits-len(target):], cbit=bits)
             counts = simulator.run(circuits=ansatz, shots=100000).result().get_counts()
             most_probable_bitstring = sorted(
                 [(key, value) for key, value in counts.items()],
@@ -115,7 +118,7 @@ for n_shots in tqdm(N_SHOTS_LIST, desc="num_shots"):
                 reverse=True,
             )[0][0]
             try:
-                target_probability = counts[target] / 10e5
+                target_probability = counts[target] / 1e5
             except:
                 target_probability = 0
             data.append(

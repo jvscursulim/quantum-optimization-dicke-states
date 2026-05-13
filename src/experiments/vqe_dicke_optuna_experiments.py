@@ -10,6 +10,7 @@ import time
 import numpy as np
 import pandas as pd
 
+from qiskit.circuit import ClassicalRegister
 from qiskit.primitives import BackendEstimatorV2
 from qiskit.transpiler import generate_preset_pass_manager
 from qiskit_aer import AerSimulator
@@ -80,8 +81,8 @@ columns = [
     "optimizer",
     "n_shots",
     "n_iter",
-    "obj_value",
     "initial_point",
+    "obj_value",
     "delta_obj_value",
     "percentual_error",
     "most_probable_bitstring",
@@ -133,7 +134,7 @@ for n_shots in tqdm(N_SHOTS_LIST, desc="num_shots"):
                 reverse=True,
             )[0][0]
             try:
-                target_probability = counts[target] / 10e5
+                target_probability = counts[target] / 1e5
             except:
                 target_probability = 0
             data.append(

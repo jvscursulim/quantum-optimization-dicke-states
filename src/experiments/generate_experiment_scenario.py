@@ -112,19 +112,19 @@ if SCENARIO == "scenarioI":
         dicke = DickeStateAnsatz().generate_quantum_circuit(
             n=11, k=k, measurement=False, param_name=params_names[k]
         )
-        if k == 0:
+        if k == 1:
             qc.x(qubit=qubits[[i for i in range(2)]])
-        elif k == 1:
-            qc.x(qubit=qubits[1])
         elif k == 2:
+            qc.x(qubit=qubits[1])
+        elif k == 3:
             qc.x(qubit=qubits[0])
         dicke_gate = dicke.to_gate(label=gate_name[k]).control(2)
         qc.append(dicke_gate, qargs=range(qubits.size))
-        if k == 0:
+        if k == 1:
             qc.x(qubit=qubits[[i for i in range(2)]])
-        elif k == 1:
-            qc.x(qubit=qubits[1])
         elif k == 2:
+            qc.x(qubit=qubits[1])
+        elif k == 3:
             qc.x(qubit=qubits[0])
 
     initial_points = (
