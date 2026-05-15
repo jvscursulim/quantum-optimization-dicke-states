@@ -37,7 +37,28 @@ parser.add_argument(
     help="The method that will be used for simulations.",
     default="statevector",
 )
-parser.add_argument("optimizer", type=str, help="Optimizer name")
+parser.add_argument(
+    "--optimizer",
+    choices=[
+        "Nelder-Mead",
+        "Powell",
+        "CG",
+        "BFGS",
+        "Newton-CG",
+        "L-BFGS-B",
+        "TNC",
+        "COBYLA",
+        "COBYQA",
+        "SLSQP",
+        "trust-constr",
+        "dogleg",
+        "trust-ncg",
+        "trust-exact",
+        "trust-krylov"
+    ],
+    help="Optimizer name",
+    required=True,
+)
 args = parser.parse_args()
 
 SCENARIO = args.scenario
