@@ -5,4 +5,4 @@ __pycache__
 .vscode
 secrets
 Pipfile.lock
-experiments/results
+results

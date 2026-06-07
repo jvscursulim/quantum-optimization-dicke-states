@@ -74,7 +74,7 @@ offset = scenario_info["offset"]
 qc = scenario_info["circuit"]
 qc = pm.run(qc)
 
-bounds = (0, 2 * np.pi)
+bounds = [(0, 2 * np.pi) for _ in range(qc.num_parameters)]
 
 columns = [
     "experiment_index",
@@ -126,7 +126,11 @@ for n_shots in tqdm(N_SHOTS_LIST, desc="num_shots"):
                 for param, value in zip(ansatz.parameters, study.best_params.values())
             }
             ansatz = ansatz.assign_parameters(parameters=params_mapper)
-            ansatz.measure_all()
+            bits = ClassicalRegister(size=len(target), name="bits")
+            ansatz.add_register(bits)
+            ansatz.measure(
+                qubit=ansatz.qregs[0][ising.num_qubits - len(target) :], cbit=bits
+            )
             counts = simulator.run(circuits=ansatz, shots=100000).result().get_counts()
             most_probable_bitstring = sorted(
                 [(key, value) for key, value in counts.items()],
