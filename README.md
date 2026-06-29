@@ -149,4 +149,4 @@ If you use this code in your research, please cite:
 
 ## References
 
-All references consulted during this research can be found in the manuscript: [Pure and mixed Dicke state ansatz for equality and inequality constraints in variational quantum eigensolver]()
+All references consulted during this research can be found in the manuscript: [Pure and mixed Dicke state ansatz for equality and inequality constraints in variational quantum eigensolver](https://arxiv.org/abs/2606.08504)
